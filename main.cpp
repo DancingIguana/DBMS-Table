@@ -205,13 +205,64 @@ void dropStudent(std::vector<Student> students, std::string fileName) {
     }
 }
 
+int findByID(std::vector<Student> students, int id) {
+    using namespace std;
+    int student_index = -1;
+    
+    for(int i = 0; i < students.size(); i++) {
+        if(students[i].id == id) {
+            student_index = i;
+            break;
+        }
+    }
+    
+    return student_index;
+}
+void updateStudent(std::vector<Student> students, std::string fileName){
+    using namespace std;
+    int id;
+    cout << "ID: ";
+    cin >> id;
+    string name;
+    int age;
+    int index_id = findByID(students,id);
+    if (index_id !=-1){
+        cout << "new Name: ";
+        cin >> name;
+        cout << "new Age: ";
+        cin >> age;
+        students[index_id].name = name;
+        students[index_id].age = age;
+        passDataToFile(students,fileName);
+        cout << "Modified student ";
+    }else{
+        cout << "ERROR: the student " << id << " does not exist within the table." << '\n'; 
+    }
+
+}
+void queryStudent(std::vector<Student> students){
+    using namespace std;
+    int id;
+    cout << "ID: ";
+    cin >> id;
+    int index_id = findByID(students,id);
+    if (index_id != -1){
+        cout << left << setw(10) << "ID" << setw(30) << "Name" << "Age\n\n";
+        cout << left << setw(10) << students[index_id].id << setw(30) << students[index_id].name << students[index_id].age << "\n";
+    }else{
+       cout << "ERROR: the student " << id << " does not exist within the table." << '\n'; 
+    }
+}
+
 void optionMenu() {
     using namespace std;
     cout << "\n\nChoose one of the following actions:\n";
     cout << "1. View students\n";
     cout << "2. Add student\n";
     cout << "3. Drop student\n";
-    cout << "4. Exit\n";
+    cout << "4. Update student\n";
+    cout << "5. Query student\n";
+    cout << "6. Exit\n";
 }
 
 void printTable(std::vector<Student> students) {
@@ -228,6 +279,7 @@ int main() {
     std::vector<Student> students;
     int option;
     string fileName = "table";
+    
     while(true) {
         students = getStudentVector(fileName); //Always update the students data structure
         optionMenu();
@@ -244,11 +296,18 @@ int main() {
             case 3:
                 dropStudent(students,fileName);
                 break;
+            case 4:
+                updateStudent(students,fileName);
+                break;
+            case 5:
+                queryStudent(students);
+                break;
             default:
                 cout << "Option unavailable\n";
                 break;
         }
     }
+    
     printTable(students);
     return 0;
 }
