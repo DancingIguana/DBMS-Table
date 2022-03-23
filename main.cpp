@@ -178,33 +178,6 @@ void addStudent(std::vector<Student> students, std::string fileName) {
     
 }
 
-/*
-Drop a student from the table given the ID
-*/
-void dropStudent(std::vector<Student> students, std::string fileName) {
-    using namespace std;
-    int id;
-    cout << "ID: ";
-    cin >> id;
-    vector<int> ids = getIdVector(students);
-    int studentPos = -1;
-
-    for(int i = 0; i < students.size(); i++) {
-        if(students[i].id == id) {
-            studentPos = i;
-            break;
-        }
-    }
-    students.erase(students.begin() + studentPos);
-
-    if(studentPos < 0) {
-        cout << "ERROR: the student " << id << " does not exist within the table." << '\n';
-    } else {
-        passDataToFile(students,fileName);
-        cout << "Deleted student " << id << "\n";
-    }
-}
-
 int findByID(std::vector<Student> students, int id) {
     using namespace std;
     int student_index = -1;
@@ -218,6 +191,29 @@ int findByID(std::vector<Student> students, int id) {
     
     return student_index;
 }
+
+/*
+Drop a student from the table given the ID
+*/
+void dropStudent(std::vector<Student> students, std::string fileName) {
+    using namespace std;
+    int id;
+    cout << "ID: ";
+    cin >> id;
+    vector<int> ids = getIdVector(students);
+    int studentPos = findByID(students,id);
+    
+    students.erase(students.begin() + studentPos);
+
+    if(studentPos < 0) {
+        cout << "ERROR: the student " << id << " does not exist within the table." << '\n';
+    } else {
+        passDataToFile(students,fileName);
+        cout << "Deleted student " << id << "\n";
+    }
+}
+
+
 void updateStudent(std::vector<Student> students, std::string fileName){
     using namespace std;
     int id;
