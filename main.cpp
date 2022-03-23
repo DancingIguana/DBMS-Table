@@ -192,6 +192,16 @@ int findByID(std::vector<Student> students, int id) {
     return student_index;
 }
 
+std::vector<int> findByName(std::vector<Student> students, std::string name) {
+    std::vector<int> student_indexes = {};
+    for(int i = 0; i < students.size(); i++) {
+	if(students[i].name == name) {
+	    student_indexes.push_back(i);
+	}
+    }
+    return student_indexes;
+}
+
 /*
 Drop a student from the table given the ID
 */
@@ -236,17 +246,38 @@ void updateStudent(std::vector<Student> students, std::string fileName){
     }
 
 }
-void queryStudent(std::vector<Student> students){
+void queryStudent(std::vector<Student> students, int option){
     using namespace std;
     int id;
-    cout << "ID: ";
-    cin >> id;
-    int index_id = findByID(students,id);
-    if (index_id != -1){
+    string name;
+    bool valid = true;
+    vector<int> index_ids;
+    if(option == 1) {
+	int id;
+	cout << "ID: ";
+	cin >> id;
+	int index_id = findByID(students, id);
+	if(index_id != -1) index_ids.push_back(index_id);;
+	
+    } else if(option == 2) {
+	cout << "Name: ";
+	string name;
+	getline(cin >> ws, name);
+	index_ids = findByName(students,name);
+    } else {
+	valid = false;
+	cout << "ERROR: Invalid option\n";
+    }
+    if (!index_ids.empty()&& valid){
         cout << left << setw(10) << "ID" << setw(30) << "Name" << "Age\n\n";
-        cout << left << setw(10) << students[index_id].id << setw(30) << students[index_id].name << students[index_id].age << "\n";
-    }else{
-       cout << "ERROR: the student " << id << " does not exist within the table." << '\n'; 
+	for(int i = 0; i < index_ids.size(); i++) {
+            cout << left << setw(10) << students[index_ids[i]].id << setw(30) << students[index_ids[i]].name << students[index_ids[i]].age << "\n";
+	}
+    } else if(valid){
+       cout << "ERROR: the student ";
+	if(option == 1) cout << id;
+	if(option == 2) cout << name;
+ 	cout << " does not exist within the table." << '\n'; 
     }
 }
 
@@ -259,6 +290,19 @@ void optionMenu() {
     cout << "4. Update student\n";
     cout << "5. Query student\n";
     cout << "6. Exit\n";
+}
+
+void queryMenu() {
+	using namespace std;
+	cout << "1. Query by ID\n";
+	cout << "2. Query by name\n";
+}
+
+void chooseQuery(std::vector<Student> students) {
+	std::cout << "Option: ";
+	int option;
+	std::cin >> option;
+	queryStudent(students,option);
 }
 
 void printTable(std::vector<Student> students) {
@@ -275,8 +319,8 @@ int main() {
     std::vector<Student> students;
     int option;
     string fileName = "table";
-    
-    while(true) {
+    bool on = true;    
+    while(on) {
         students = getStudentVector(fileName); //Always update the students data structure
         optionMenu();
         cout << "Option: ";
@@ -296,14 +340,17 @@ int main() {
                 updateStudent(students,fileName);
                 break;
             case 5:
-                queryStudent(students);
+		queryMenu();
+		chooseQuery(students);
                 break;
+	    case 6:
+		on = false;
+		break;
             default:
                 cout << "Option unavailable\n";
                 break;
         }
     }
     
-    printTable(students);
     return 0;
 }
