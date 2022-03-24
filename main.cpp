@@ -201,6 +201,24 @@ std::vector<int> findByName(std::vector<Student> students, std::string name) {
     }
     return student_indexes;
 }
+std::vector<int> findByIDRange(std::vector<Student> students, int initialID,int finalID){
+    std::vector<int> student_indexes = {};
+    for(int i = 0; i < students.size(); i++) {
+	if(students[i].id >= initialID && students[i].id <= finalID) {
+	    student_indexes.push_back(i);
+	}
+    }
+    return student_indexes;
+}
+std::vector<int> findByAgeRange(std::vector<Student> students, int initialAge,int finalAge){
+    std::vector<int> student_indexes = {};
+    for(int i = 0; i < students.size(); i++) {
+	if(students[i].age >= initialAge && students[i].age <= finalAge) {
+	    student_indexes.push_back(i);
+	}
+    }
+    return student_indexes;
+}
 
 /*
 Drop a student from the table given the ID
@@ -264,6 +282,22 @@ void queryStudent(std::vector<Student> students, int option){
 	string name;
 	getline(cin >> ws, name);
 	index_ids = findByName(students,name);
+    } else if(option==3){
+        int iID;
+        int fID;
+        cout << "Initial ID: ";
+        cin >> iID;
+        cout << "Final ID: ";
+        cin >> fID;
+        index_ids = findByIDRange(students,iID,fID);
+    }else if(option==4){
+        int firstAge;
+        int lastAge;
+        cout << "Starting age: ";
+        cin >> firstAge;
+        cout << "Final age: ";
+        cin >> lastAge;
+        index_ids = findByAgeRange(students,firstAge,lastAge);
     } else {
 	valid = false;
 	cout << "ERROR: Invalid option\n";
@@ -296,6 +330,8 @@ void queryMenu() {
 	using namespace std;
 	cout << "1. Query by ID\n";
 	cout << "2. Query by name\n";
+    cout << "3. Query by ID Range\n";
+    cout << "4. Query by age Range\n";
 }
 
 void chooseQuery(std::vector<Student> students) {
